@@ -32,6 +32,6 @@ app.use((req, res, next) => {
 })
 
 
-app.playListen(PORT, ()=> {
+app.listen(PORT, ()=> {
   console.log(`=> server launched on port : ${PORT}`)
 })

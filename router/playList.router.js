@@ -19,7 +19,7 @@ router.post('/', async (req, res, next) => {
 router.get('/', async (req, res, next) => {
   try {
     const playLists = await playList.find();
-    res.status(200).json({ message: 'playListes trouvées', data: playLists });
+    res.status(200).json({ message: 'playLists trouvées', data: playLists });
   } catch (err) {
     next(err);
   }
@@ -33,7 +33,7 @@ router.get('/:playListId', async (req, res, next) => {
     if (!playList) {
       return res.status(404).json({ message: 'Aucune playListe trouvée' });
     }
-    res.status(200).json({ message: 'playListe trouvée', data: playList });
+    res.status(200).json({ message: 'playList trouvée', data: playList });
   } catch (err) {
     next(err);
   }

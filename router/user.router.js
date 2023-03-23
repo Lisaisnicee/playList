@@ -23,6 +23,7 @@ router.post('/login',(req, res, next)=> {
 })
 
 
+
 router.post('/users', async (req, res, next)=> {
     try {
          if(!("email" in req.body && "password" in req.body)) {
@@ -49,7 +50,18 @@ router.get('/users', async (req, res, next) => {
   });
   
 
+  router.get('/users/:id', async (req, res, next) => {
 
+    const userId = req.params.id;
+
+    try {
+      const user = await User.findbyId(userId);
+      res.status(200).json(user);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
 
 
 
