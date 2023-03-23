@@ -5,14 +5,14 @@ require('./db')
 
 const playListRouter = require('./router/playList.router')
 const userRouter = require('./router/user.router')
-//const songRouter = require ('./router/song.router')
+const songRouter = require ('./router/song.router')
 //const authRouter = require('./router/auth.router')
 const PORT = process.env.PORT || 3000
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use('/playlist', playListRouter)
-//app.use('/song', songRouter)
+app.use('/song', songRouter)
 app.use('', userRouter)
 
 

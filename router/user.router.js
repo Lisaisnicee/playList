@@ -55,7 +55,7 @@ router.get('/users', async (req, res, next) => {
     const userId = req.params.id;
 
     try {
-      const user = await User.findbyId(userId);
+      const user = await User.findById(userId);
       res.send(user);
       res.status(200).json(user);
     } catch (error) {
