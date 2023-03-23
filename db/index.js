@@ -1,8 +1,7 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
-
-const data = require('../data');
 const List = require('../model/list.model');
+const User = require('../model/user.model')
 const MONGO_URI = process.env.MONGO_URI
 
 
@@ -12,14 +11,6 @@ mongoose
     console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`)
   })
 
-  .then(
-    
-    async () => {
-      const ans = await List.insertMany(data)
-      await action(data)
-      //mongoose.connection.close();
- 
-  })
   .catch((err) => {
     console.error('Error connecting to mongo: ', err)
   })

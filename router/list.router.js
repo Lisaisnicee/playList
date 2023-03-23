@@ -2,6 +2,20 @@ const router = require('express').Router();
 const List = require('../model/list.model');
 
 
+router.post('/', async (req, res, next) => {
+  try {
+    const newList = {
+      name: req.body.name,
+      //userId: req.body.userId
+    };
+    const createdList = await List.create(newList);
+    res.status(201).json(createdList);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 router.get('/', async (req, res, next) => {
   try {
     const lists = await List.find();

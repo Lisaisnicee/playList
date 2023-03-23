@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const todoSchema = new Schema({
   listId: {
-    type: Schema.Types.ObjectId,
+    type: SchemaTypes.ObjectId,
     ref: 'List',
     required: true
   },
