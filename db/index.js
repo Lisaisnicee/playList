@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 require('dotenv').config()
-const List = require('../model/list.model');
+const playList = require('../model/playList.model');
 const User = require('../model/user.model')
 const MONGO_URI = process.env.MONGO_URI
 

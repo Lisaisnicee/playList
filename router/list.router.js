@@ -1,15 +1,15 @@
 const router = require('express').Router();
-const List = require('../model/list.model');
+const playList = require('../model/playList.model');
 
 
 router.post('/', async (req, res, next) => {
   try {
-    const newList = {
+    const newplayList = {
       name: req.body.name,
       //userId: req.body.userId
     };
-    const createdList = await List.create(newList);
-    res.status(201).json(createdList);
+    const createdplayList = await playList.create(newplayList);
+    res.status(201).json(createdplayList);
   } catch (err) {
     next(err);
   }
@@ -18,22 +18,22 @@ router.post('/', async (req, res, next) => {
 
 router.get('/', async (req, res, next) => {
   try {
-    const lists = await List.find();
-    res.status(200).json({ message: 'Listes trouvées', data: lists });
+    const playLists = await playList.find();
+    res.status(200).json({ message: 'playListes trouvées', data: playLists });
   } catch (err) {
     next(err);
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:playListId', async (req, res, next) => {
   const id = req.params.id;
 
   try {
-    const list = await List.findById(id);
-    if (!list) {
-      return res.status(404).json({ message: 'Aucune liste trouvée' });
+    const playList = await playList.findById(id);
+    if (!playList) {
+      return res.status(404).json({ message: 'Aucune playListe trouvée' });
     }
-    res.status(200).json({ message: 'Liste trouvée', data: list });
+    res.status(200).json({ message: 'playListe trouvée', data: playList });
   } catch (err) {
     next(err);
   }

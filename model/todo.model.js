@@ -1,9 +1,9 @@
 const { Schema, model } = require('mongoose');
 
-const todoSchema = new Schema({
-  listId: {
+const songSchema = new Schema({
+  playListId: {
     type: SchemaTypes.ObjectId,
-    ref: 'List',
+    ref: 'playList',
     required: true
   },
   title: {
@@ -17,6 +17,8 @@ const todoSchema = new Schema({
  
 }, { timestamps: true });
 
-const toDo = model('toDo', todoSchema);
+const song = model('song', songSchema);
 
-module.exports = toDo;
+module.exports = song;
+
+

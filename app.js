@@ -3,16 +3,16 @@ const express = require('express')
 require('dotenv').config()
 require('./db')
 
-const listRouter = require('./router/list.router')
+const playListRouter = require('./router/playList.router')
 const userRouter = require('./router/user.router')
-//const todoRouter = require ('./router/todo.router')
+//const songRouter = require ('./router/song.router')
 //const authRouter = require('./router/auth.router')
 const PORT = process.env.PORT || 3000
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
-app.use('/list', listRouter)
-//app.use('/todo', todoRouter)
+app.use('/playList', playListRouter)
+//app.use('/song', songRouter)
 app.use('', userRouter)
 
 
@@ -32,6 +32,6 @@ app.use((req, res, next) => {
 })
 
 
-app.listen(PORT, ()=> {
+app.playListen(PORT, ()=> {
   console.log(`=> server launched on port : ${PORT}`)
 })
