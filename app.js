@@ -13,7 +13,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use('/list', listRouter)
 //app.use('/todo', todoRouter)
-app.use('/user', userRouter)
+app.use('', userRouter)
 
 
 app.use((err, req, res, next) => {

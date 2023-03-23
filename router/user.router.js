@@ -1,39 +1,36 @@
 const router = require('express').Router()
 const User = require('../model/user.model')
 const bcrypt = require('bcrypt')
-
-
-
-
 const bodyParser = require('body-parser');
-
-router.use(bodyParser.urlencoded({ extended: false }))
 
 const { required } = require('nodemon/lib/config');
 const saltRounds = 10;
 
 
+router.use(bodyParser.urlencoded({ extended: false }))
+
+
 router.post('/login',(req, res, next)=> {
     console.log(req.body)
-    
-    
+
     bcrypt.genSalt(saltRounds, function(err, salt) {
         bcrypt.hash(req.body.password, salt, function(err, hash) {
-            console.log(hash) 
+            console.log(hash)
         });
     });
     res.status(200).json(req.body)
- 
+
 })
 
 
-router.post('/login', async (req, res, next)=> {
+router.post('/users', async (req, res, next)=> {
     try {
          if(!("email" in req.body && "password" in req.body)) {
 
             return res.status(422).json({message : "need an email and password"})
          }
         const ans = await User.create(req.body)
+        const saveAns = await ans.save();
         res.status(201).json(ans)
 
     }
@@ -42,7 +39,15 @@ router.post('/login', async (req, res, next)=> {
     }
 })
 
-
+router.get('/users', async (req, res, next) => {
+    try {
+      const users = await User.find({});
+      res.status(200).json(users);
+    } catch (error) {
+      next(error);
+    }
+  });
+  
 
 
 
