@@ -32,7 +32,7 @@ router.post('/users', async (req, res, next)=> {
          }
         const ans = await User.create(req.body)
         const saveAns = await ans.save();
-        res.status(201).json(ans)
+        res.status(201).json(saveAns)
 
     }
     catch(error) {
@@ -48,7 +48,7 @@ router.get('/users', async (req, res, next) => {
       next(error);
     }
   });
-  
+
 
   router.get('/users/:id', async (req, res, next) => {
 
@@ -56,12 +56,13 @@ router.get('/users', async (req, res, next) => {
 
     try {
       const user = await User.findbyId(userId);
+      res.send(user);
       res.status(200).json(user);
     } catch (error) {
+
       next(error);
     }
   });
-  
 
 
 

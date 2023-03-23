@@ -2,21 +2,25 @@ const router = require('express').Router();
 const playList = require('../model/playList.model');
 
 
-router.post('/', async (req, res, next) => {
+router.post('/lists', async (req, res, next) => {
+
   try {
-    const newplayList = {
-      name: req.body.name,
-      //userId: req.body.userId
-    };
-    const createdplayList = await playList.create(newplayList);
-    res.status(201).json(createdplayList);
-  } catch (err) {
-    next(err);
-  }
+  
+   const createdplayList = await playList.create(req.body)
+   const saveAns = await createdplayList.save();
+   res.status(201).json(saveAns)
+
+}
+catch(error) {
+   next(error)
+}
+
+
+
 });
 
 
-router.get('/', async (req, res, next) => {
+router.get('/lists', async (req, res, next) => {
   try {
     const playLists = await playList.find();
     res.status(200).json({ message: 'playLists trouvées', data: playLists });
