@@ -43,4 +43,24 @@ router.get('/:playListId', async (req, res, next) => {
   }
 });
 
+
+
+
+router.delete('/lists/:id', async (req, res, next) => {
+  const playlistId = req.params.id;
+
+  try {
+    const playList = await playList.findByIdAndDelete(playlistId);
+
+    if (!playList) {
+      return res.status(404).json({ message: "La playlist que vous cherchez à supprimer est introuvable" });
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 module.exports = router;

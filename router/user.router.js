@@ -65,6 +65,23 @@ router.get('/users', async (req, res, next) => {
   });
 
 
+  router.delete('/users/:id', async (req, res, next) => {
+    const userId = req.params.id;
+  
+    try {
+      const user = await User.findByIdAndDelete(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: "L'utilisateur que vous cherchez à supprimer est introuvable" });
+      }
+  
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  });
+  
+
 
 module.exports = router;
 
