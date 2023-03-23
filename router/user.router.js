@@ -64,6 +64,24 @@ router.get('/users', async (req, res, next) => {
     }
   });
 
+  router.patch('/users/:id', async (req, res, next) => {
+    const id = req.params.id;
+    
+      try {
+        const user = await User.findByIdAndUpdate(id, req.body, { new: true });
+        if (!user) {
+          return res.status(404).json({ message: 'Aucune chanson trouvée à update' });
+        }
+        //res.send(playList);
+        res.json(user);
+      } catch (err) {
+        console.error(err.message);
+        res.status(500).send(err);
+      }
+    });
+    
+
+
 
   router.delete('/users/:id', async (req, res, next) => {
     const userId = req.params.id;
