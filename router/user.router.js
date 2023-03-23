@@ -65,10 +65,17 @@ router.get('/users', async (req, res, next) => {
   });
 
   router.patch('/users/:id', async (req, res, next) => {
-    const id = req.params.id;
+    const updatedInfo = Object.keys(req.body);
+    const userId = req.params.id;
+    
     
       try {
-        const user = await User.findByIdAndUpdate(id, req.body, { new: true });
+const user = await User.findById(userId)
+updatedInfo.forEach(update =>user[update] = req.body[update]);
+await user.save();
+
+
+        //const user = await User.findByIdAndUpdate(id, req.body, { new: true });
         if (!user) {
           return res.status(404).json({ message: 'Aucune chanson trouvée à update' });
         }
@@ -99,6 +106,34 @@ router.get('/users', async (req, res, next) => {
     }
   });
   
+
+
+
+  router.post('/users/login', async (req, res, next) => {
+
+    try {
+
+        if (!('email' in req.body && 'password' in req.body)) {
+            return res
+                .status(422)
+                .json({ message: 'need 2 keys : email and password' })
+        }
+        const { email, password } = req.body
+        const foundUser = await User.findOne({ email })
+      
+        if (!foundUser) {
+            return res.status(409).json({ message: 'wrong email or password' })
+        }
+        const isValid = await bcrypt.compare(password, foundUser.password)
+        if (!isValid) {
+            return res.status(409).json({ message: 'wrong email or password' })
+        }
+        return res.status(200).json(foundUser)
+    } 
+    catch (error) {
+      next(error)
+    }
+  });
 
 
 module.exports = router;
