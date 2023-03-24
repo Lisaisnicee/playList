@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 
 router.use(bodyParser.urlencoded({ extended: false }));
 
-router.post("/sign", async (req, res, next) => {
+router.post("/signup", async (req, res, next) => {
   try {
     if (!("email" in req.body && "password" in req.body)) {
       return res.status(422).json({ message: "need an email and password" });
@@ -21,7 +21,7 @@ router.post("/sign", async (req, res, next) => {
   }
 });
 
-router.get("/users", authentification, async (req, res, next) => {
+router.get("/users", async (req, res, next) => {
   try {
     const users = await User.find({});
     res.status(200).json(users);
@@ -31,8 +31,7 @@ router.get("/users", authentification, async (req, res, next) => {
 });
 
 router.get("/users/me", authentification, async (req, res, next) => {
-  console.log("hi");
-  res.send(req.user);
+  res.status(200).json(req.user);
 });
 
 router.get("/users/:id", async (req, res, next) => {
@@ -114,5 +113,4 @@ router.post("/users/login", async (req, res, next) => {
   }
 });
 
-module.exports = router;
 module.exports = router;

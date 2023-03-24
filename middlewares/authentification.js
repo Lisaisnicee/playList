@@ -7,16 +7,18 @@ const authentification = async (req, res, next) => {
 
     //const auth = req.header("Authorization").replace("Bearer ", "");
     const decodedToken = jwt.verify(auth, "foo");
-    res.status(200).json({ message: "token valid", decodedToken });
+    
     const user = await User.findOne({
       _id: decodedToken._id,
       "authTokens.authToken": auth,
     });
-
+    res.status(200).json(user);
     if (!user) throw new Error();
+  
     console.log(user);
     req.user = user;
     next();
+
   } catch (error) {
     res.status(401).send("L'authentification a échoué !");
   }
