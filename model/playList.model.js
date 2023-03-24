@@ -1,24 +1,27 @@
-const { Schema, model, SchemaTypes } = require('mongoose');
+const { Schema, model, SchemaTypes } = require("mongoose");
 
-const playListSchema = new Schema({
-  userId: {
-    type: SchemaTypes.ObjectId,
-    ref: 'User',
-    required: true
+const playListSchema = new Schema(
+  {
+    userId: {
+      type: SchemaTypes.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+
+    songs: [
+      {
+        type: SchemaTypes.ObjectId,
+        ref: "song",
+      },
+    ],
   },
-  name: {
-    type: String,
-    required: true
-  },
+  { timestamps: true }
+);
 
-  songs : [
-    {
-    type: SchemaTypes.ObjectId,
-    ref : 'song'
-    }
-  ]
-}, { timestamps: true });
-
-const playList = model('playList', playListSchema);
+const playList = model("playList", playListSchema);
 
 module.exports = playList;
