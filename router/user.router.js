@@ -41,9 +41,9 @@ router.get("/users/:id", async (req, res, next) => {
     const user = await User.findById(userId);
 
     if (!user) {
-      res
-        .status(404)
-        .json({ message: "Sorry, the user you're looking for doesn't exist." });
+      res.status(404).json({
+        message: "Désolé, l'utilisateur que vous recherchez n'existe pas.",
+      });
     } else {
       res.send(user);
     }
@@ -90,9 +90,9 @@ router.delete("/users/:id", async (req, res, next) => {
     const user = await User.findByIdAndDelete(userId);
 
     if (!user) {
-      res
-        .status(404)
-        .json({ message: "The user you're trying to delete doesn't exist." });
+      res.status(404).json({
+        message: "L'utilisateur que vous essayez de supprimer n'existe pas.",
+      });
       return;
     }
 
@@ -104,7 +104,7 @@ router.delete("/users/:id", async (req, res, next) => {
 
     res.status(204).json({
       message:
-        "The user has been deleted along with all the playlists and songs he created.",
+        "L'utilisateur a été supprimé, ainsi que toutes les playlists qu'il a pu créer",
     });
   } catch (error) {
     next(error);
