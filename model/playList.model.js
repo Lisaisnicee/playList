@@ -5,7 +5,7 @@ const playListSchema = new Schema(
     userId: {
       type: SchemaTypes.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
     name: {
       type: String,

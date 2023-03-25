@@ -53,28 +53,37 @@ router.get("/users/:id", async (req, res, next) => {
 });
 
 router.patch("/users/:id", async (req, res, next) => {
-  const updatedInfo = Object.keys(req.body);
   const userId = req.params.id;
-
+  const playlists = req.body.playlists;
+  console.log(playlists)
   try {
     const user = await User.findById(userId);
-    updatedInfo.forEach((update) => (user[update] = req.body[update]));
-    await user.save();
-
-    //const user = await User.findByIdAndUpdate(id, req.body, { new: true });
     if (!user) {
+      console.log(user)
       return res
         .status(404)
-        .json({ message: "Aucune chanson trouvée à update" });
+        .json({ message: "Aucune playlist trouvée à update" });
     }
-    //res.send(playList);
-    res.json(user);
+
+    if (playlists) {
+      const playlistIds = Array.isArray(playlists) ? playlists : [playlists];
+      for (let i = 0; i < playlistIds.length; i++) {
+        const playlistId = playlistIds[i];
+        await PlayList.findByIdAndUpdate(playlistId, { userId: user });
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, req.body, {
+      new: true,
+    });
+
+    res.json(updatedUser);
   } catch (err) {
-    next(err);
     console.error(err.message);
     res.status(500).send(err);
   }
 });
+
 
 router.delete("/users/:id", async (req, res, next) => {
   const userId = req.params.id;
@@ -83,16 +92,16 @@ router.delete("/users/:id", async (req, res, next) => {
     const user = await User.findByIdAndDelete(userId);
     console.log(user);
     const playlists = await PlayList.find({ userId: user._id });
+    console.log(user);
     for (const playlist of playlists) {
       await Song.deleteMany({ playListId: playlist._id });
-      await playlist.delete();
+      //await playlist.delete();
     }
     await PlayList.findById({ userId: user._id });
- 
+
     //user.playlists.forEach(async (playlist) => await playlist.remove());
 
     if (!user) {
-   
       res
         .status(404)
         .json({ message: "The user you're trying to delete doesn't exist." });

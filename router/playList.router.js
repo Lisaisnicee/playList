@@ -36,24 +36,41 @@ router.get("/:playListId", async (req, res, next) => {
   }
 });
 
+
+
 router.patch("/:playListId", async (req, res, next) => {
-  const id = req.params.playListId;
+  const playListId = req.params.playListId;
+  const songs = req.body.songs;
 
   try {
-    const playList = await PlayList.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const playList = await PlayList.findById(playListId);
     if (!playList) {
       return res
         .status(404)
-        .json({ message: "Aucune playlist trouvée à update" });
+        .json({ message: "Aucune playlist trouvée à update" })
     }
-    res.json(playList);
+
+    if (songs) {
+      const songIds = Array.isArray(songs) ? songs : [songs]
+      for (let i = 0; i < songIds.length; i++) {
+        const songId = songIds[i];
+        await Song.findByIdAndUpdate(songId, { playListId: playListId })
+      }
+    }
+
+    const updatedPlayList = await PlayList.findByIdAndUpdate(
+      playListId,
+      req.body,
+      { new: true }
+    );
+
+    res.json(updatedPlayList);
   } catch (err) {
     console.error(err.message);
     res.status(500).send(err);
   }
 });
+
 
 router.delete("/:playListId", async (req, res, next) => {
   const playlistId = req.params.playListId;

@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Song = require("../model/song.model");
+const PlayList = require("../model/playList.model");
 const isSongInDB = require("../middlewares/isSongInDB");
 router.post("/", async (req, res, next) => {
   try {
@@ -35,23 +36,53 @@ router.get("/:songId", isSongInDB, async (req, res, next) => {
   }
 });
 
+// router.patch("/:songId", async (req, res, next) => {
+//   const id = req.params.songId;
+
+//   try {
+//     const song = await Song.findByIdAndUpdate(id, req.body, { new: true });
+//     if (!song) {
+//       return res
+//         .status(404)
+//         .json({ message: "Aucune chanson trouvée à update" });
+//     }
+//     //res.send(playList);
+//     res.json(song);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send(err);
+//   }
+// });
+
 router.patch("/:songId", async (req, res, next) => {
-  const id = req.params.songId;
+  const songId = req.params.songId;
 
   try {
-    const song = await Song.findByIdAndUpdate(id, req.body, { new: true });
+    const song = await Song.findByIdAndUpdate(songId, req.body, { new: true });
+
     if (!song) {
       return res
         .status(404)
         .json({ message: "Aucune chanson trouvée à update" });
     }
-    //res.send(playList);
+
+    // Update the PlayList document with the updated song
+    const playList = await PlayList.findOneAndUpdate(
+      { _id: song.playListId },
+      { $addToSet: { songs: song._id } },
+      { new: true }
+    );
+
     res.json(song);
   } catch (err) {
     console.error(err.message);
     res.status(500).send(err);
   }
 });
+
+
+
+
 
 router.delete("/:songId", async (req, res, next) => {
   const songId = req.params.songId;
