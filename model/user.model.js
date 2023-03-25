@@ -33,7 +33,7 @@ const userSchema = new Schema(
 );
 
 userSchema.methods.generateAuthToken = async function () {
-  const authToken = jwt.sign({ _id: this.id.toString() }, "foo");
+  const authToken = jwt.sign({ _id: this.id.toString() }, "123456789");
   this.authTokens.push({ authToken });
   await this.save();
   return authToken;

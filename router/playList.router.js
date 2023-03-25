@@ -22,7 +22,7 @@ router.post("/lists", async (req, res, next) => {
       { $addToSet: { playlists: createdPlayList._id } }
     );
 
-    // $addset pour ajouter une valeur a array
+    // $addset pour ajouter une valeur a un array
     const updatedPlaylist = await PlayList.findOneAndUpdate(
       { _id: createdPlayList._id },
       { $addToSet: { songs: songs } },
@@ -124,6 +124,5 @@ router.delete("/:playListId", async (req, res, next) => {
     next(error);
   }
 });
-
 
 module.exports = router;

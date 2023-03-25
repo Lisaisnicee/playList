@@ -4,7 +4,7 @@ const PlayList = require("../model/playList.model");
 const Song = require("../model/song.model");
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
-const authentification = require("../middlewares/authentification");
+const authentification = require("../middlewares/authentification.mid");
 const { required } = require("nodemon/lib/config");
 const jwt = require("jsonwebtoken");
 
@@ -27,9 +27,7 @@ router.get("/users", async (req, res, next) => {
   try {
     const users = await User.find({});
     res.status(200).json(users);
-  } catch (error) {
- 
-  }
+  } catch (error) {}
 });
 
 router.get("/users/me", authentification, async (req, res, next) => {
@@ -57,11 +55,10 @@ router.get("/users/:id", async (req, res, next) => {
 router.patch("/users/:id", async (req, res, next) => {
   const userId = req.params.id;
   const playlists = req.body.playlists;
- 
+
   try {
     const user = await User.findById(userId);
     if (!user) {
-      
       return res
         .status(404)
         .json({ message: "Aucune playlist trouvée à update" });
@@ -85,7 +82,6 @@ router.patch("/users/:id", async (req, res, next) => {
     res.status(500).send(err);
   }
 });
-
 
 router.delete("/users/:id", async (req, res, next) => {
   const userId = req.params.id;

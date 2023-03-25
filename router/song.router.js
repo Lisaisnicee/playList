@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Song = require("../model/song.model");
 const PlayList = require("../model/playList.model");
-const isSongInDB = require("../middlewares/isSongInDB");
+const isSongInDB = require("../middlewares/isSongInDB.mid");
 router.post("/", async (req, res, next) => {
   try {
     const createdSong = await Song.create(req.body);
