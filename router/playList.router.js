@@ -6,27 +6,23 @@ const User = require("../model/user.model");
 router.post("/lists", async (req, res, next) => {
   try {
     const { userId, songs } = req.body;
-
-    // Create playlist
     const createdPlayList = await PlayList.create({
       ...req.body,
       songs: [],
     });
 
-    // Add playlist ID to user's playlist array
     const updatedUser = await User.findOneAndUpdate(
       { _id: userId },
       { $addToSet: { playlists: createdPlayList._id } },
       { new: true }
     );
 
-    // Add playlist ID to songs' playlists array
     await Song.updateMany(
       { _id: { $in: songs } },
       { $addToSet: { playlists: createdPlayList._id } }
     );
 
-    // Add songs to playlist
+    // $addset pour ajouter une valeur a array
     const updatedPlaylist = await PlayList.findOneAndUpdate(
       { _id: createdPlayList._id },
       { $addToSet: { songs: songs } },
@@ -38,7 +34,6 @@ router.post("/lists", async (req, res, next) => {
     next(error);
   }
 });
-
 
 router.get("/lists", async (req, res, next) => {
   try {
@@ -66,9 +61,10 @@ router.get("/:playListId", async (req, res, next) => {
 
 router.patch("/:playListId", async (req, res, next) => {
   const playlistId = req.params.playListId;
+  const songs = req.body.songs;
 
   try {
-    const playlist = await PlayList.findByIdAndUpdate(playlistId, req.body, { new: true });
+    const playlist = await PlayList.findById(playlistId);
 
     if (!playlist) {
       return res
@@ -81,8 +77,23 @@ router.patch("/:playListId", async (req, res, next) => {
       { $addToSet: { playlists: playlist._id } },
       { new: true }
     );
+    if (songs) {
+      const songIds = Array.isArray(songs) ? songs : [songs];
+      for (let i = 0; i < songIds.length; i++) {
+        const songId = songIds[i];
+        await Song.findByIdAndUpdate(songId, { playListId: playlist });
+      }
+    }
 
-    res.json(playlist);
+    const updatedPlaylist = await PlayList.findByIdAndUpdate(
+      playlistId,
+      req.body,
+      {
+        new: true,
+      }
+    );
+
+    res.json(updatedPlaylist);
   } catch (err) {
     console.error(err.message);
     res.status(500).send(err);
@@ -94,7 +105,7 @@ router.delete("/:playListId", async (req, res, next) => {
 
   try {
     const playList = await PlayList.findByIdAndDelete(playlistId);
-    await Song.deleteMany({ playListId: playList._id });
+    await Song.deleteMany({ playListId: playlistId });
 
     if (!playList) {
       return res.status(404).json({

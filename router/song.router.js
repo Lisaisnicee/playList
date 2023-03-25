@@ -23,7 +23,7 @@ router.get("/", async (req, res, next) => {
 
 router.get("/:songId", isSongInDB, async (req, res, next) => {
   const id = req.params.songId;
-  console.log("route songId", req.params);
+
   try {
     const song = await Song.findById(id);
     console.log("song : ", song);
