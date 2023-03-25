@@ -5,13 +5,40 @@ const User = require("../model/user.model");
 
 router.post("/lists", async (req, res, next) => {
   try {
-    const createdPlayList = await PlayList.create(req.body);
-    const saveAns = await createdPlayList.save();
-    res.status(201).json(saveAns);
+    const { userId, songs } = req.body;
+
+    // Create playlist
+    const createdPlayList = await PlayList.create({
+      ...req.body,
+      songs: [],
+    });
+
+    // Add playlist ID to user's playlist array
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: userId },
+      { $addToSet: { playlists: createdPlayList._id } },
+      { new: true }
+    );
+
+    // Add playlist ID to songs' playlists array
+    await Song.updateMany(
+      { _id: { $in: songs } },
+      { $addToSet: { playlists: createdPlayList._id } }
+    );
+
+    // Add songs to playlist
+    const updatedPlaylist = await PlayList.findOneAndUpdate(
+      { _id: createdPlayList._id },
+      { $addToSet: { songs: songs } },
+      { new: true }
+    );
+
+    res.status(201).json(updatedPlaylist);
   } catch (error) {
     next(error);
   }
 });
+
 
 router.get("/lists", async (req, res, next) => {
   try {
