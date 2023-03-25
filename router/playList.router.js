@@ -112,11 +112,18 @@ router.delete("/:playListId", async (req, res, next) => {
         message: "La playlist que vous recherchez à supprimer est introuvable",
       });
     }
+    //$pull pour retirer un element d'un arra y
+    const user = await User.findOneAndUpdate(
+      { _id: playList.userId },
+      { $pull: { playlists: playlistId } },
+      { new: true }
+    );
 
     res.status(204).send();
   } catch (error) {
     next(error);
   }
 });
+
 
 module.exports = router;
