@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const PlayList = require("../model/playList.model");
+const Song = require("../model/song.model");
 
 router.post("/lists", async (req, res, next) => {
   try {
@@ -59,10 +60,11 @@ router.delete("/:playListId", async (req, res, next) => {
 
   try {
     const playList = await PlayList.findByIdAndDelete(playlistId);
+    await Song.deleteMany({ playListId: playList._id });
 
     if (!playList) {
       return res.status(404).json({
-        message: "La playlist que vous cherchez à supprimer est introuvable",
+        message: "La playlist que vous recherchez à supprimer est introuvable",
       });
     }
 

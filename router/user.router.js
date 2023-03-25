@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const User = require("../model/user.model");
+const PlayList = require("../model/playList.model");
+const Song = require("../model/song.model");
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 const authentification = require("../middlewares/authentification");
@@ -25,9 +27,7 @@ router.get("/users", async (req, res, next) => {
   try {
     const users = await User.find({});
     res.status(200).json(users);
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 });
 
 router.get("/users/me", authentification, async (req, res, next) => {
@@ -39,8 +39,14 @@ router.get("/users/:id", async (req, res, next) => {
 
   try {
     const user = await User.findById(userId);
-    res.send(user);
-    res.status(200).json(user);
+
+    if (!user) {
+      res
+        .status(404)
+        .json({ message: "Sorry, the user you're looking for doesn't exist." });
+    } else {
+      res.send(user);
+    }
   } catch (error) {
     next(error);
   }
@@ -75,16 +81,30 @@ router.delete("/users/:id", async (req, res, next) => {
 
   try {
     const user = await User.findByIdAndDelete(userId);
+    console.log(user);
+    const playlists = await PlayList.find({ userId: user._id });
+    for (const playlist of playlists) {
+      await Song.deleteMany({ playListId: playlist._id });
+      await playlist.delete();
+    }
+    await PlayList.findById({ userId: user._id });
+ 
+    //user.playlists.forEach(async (playlist) => await playlist.remove());
 
     if (!user) {
-      return res.status(404).json({
-        message: "L'utilisateur que vous cherchez à supprimer est introuvable",
+   
+      res
+        .status(404)
+        .json({ message: "The user you're trying to delete doesn't exist." });
+    } else {
+      console.log("hey");
+      res.status(204).json({
+        message:
+          "The user has been deleted along with all the playlists he created.",
       });
     }
-
-    res.status(204).send();
   } catch (error) {
-    next(error);
+    res.status(500).send(error);
   }
 });
 
