@@ -36,23 +36,7 @@ router.get("/:songId", isSongInDB, async (req, res, next) => {
   }
 });
 
-// router.patch("/:songId", async (req, res, next) => {
-//   const id = req.params.songId;
 
-//   try {
-//     const song = await Song.findByIdAndUpdate(id, req.body, { new: true });
-//     if (!song) {
-//       return res
-//         .status(404)
-//         .json({ message: "Aucune chanson trouvée à update" });
-//     }
-//     //res.send(playList);
-//     res.json(song);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send(err);
-//   }
-// });
 
 router.patch("/:songId", async (req, res, next) => {
   const songId = req.params.songId;
@@ -66,7 +50,7 @@ router.patch("/:songId", async (req, res, next) => {
         .json({ message: "Aucune chanson trouvée à update" });
     }
 
-    // Update the PlayList document with the updated song
+    
     const playList = await PlayList.findOneAndUpdate(
       { _id: song.playListId },
       { $addToSet: { songs: song._id } },
